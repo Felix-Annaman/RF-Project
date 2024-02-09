@@ -18,4 +18,4 @@ To use the app, simply enter the ingredients you have on hand in the search bar 
 
 ## Installation
 
-To install the app, simply clone the repository to your local machine and open the `index.html` file in your web browser. Alternatively, you can view the deployed application on GitHub Pages at [insert link here].
+To install the app, simply clone the repository to your local machine and open the `index.html` file in your web browser. Alternatively, you can view the deployed application on GitHub Pages at [https://felix-annaman.github.io/RF-Project/].
