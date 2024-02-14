@@ -8,7 +8,7 @@ window.onload = function() {
     const defaultRecipes = [
         { strMeal: 'Jollof Rice', strMealThumb: 'asset/jollof.jpg', idMeal: 'id1' },
         { strMeal: 'Ampesi', strMealThumb: 'asset/ampesi.jpg', idMeal: 'id2' },
-        { strMeal: 'Fufy', strMealThumb: 'asset/fufu.jpg', idMeal: 'id3' },
+        { strMeal: 'Fufu', strMealThumb: 'asset/fufu.jpg', idMeal: 'id3' },
     ];
     displayRecipes(defaultRecipes);
 };
