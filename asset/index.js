@@ -7,9 +7,9 @@ function getCountryDetails(countryName) {
 
 window.onload = function() {
     const defaultRecipes = [
-        { strMeal: 'Recipe 1', strMealThumb: 'image1.jpg', idMeal: 'id1' },
-        { strMeal: 'Recipe 2', strMealThumb: 'image2.jpg', idMeal: 'id2' },
-        { strMeal: 'Recipe 3', strMealThumb: 'image3.jpg', idMeal: 'id3' },
+        { strMeal: 'Recipe 1', strMealThumb: 'jollof.jpg', idMeal: 'id1' },
+        { strMeal: 'Recipe 2', strMealThumb: 'ampesi.jpg', idMeal: 'id2' },
+        { strMeal: 'Recipe 3', strMealThumb: 'fufu.jpg', idMeal: 'id3' },
     ];
     displayRecipes(defaultRecipes);
 };
