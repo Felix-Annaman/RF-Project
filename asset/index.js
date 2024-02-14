@@ -1,87 +1,78 @@
-let currentPage = 0;
-const resultsPerPage = 10;
-const appId = 'c27c39be';
-const appKey = '44d7546ed0ecf1cf76b5278883d9fb69-';
+function getCountryDetails(countryName) {
+    return fetch(`https://restcountries.com/v3.1/name/${countryName}`)
+        .then(response => response.json())
+        .then(data => data[0]);
+}
 
-function fetchRecipes(page) {
-    document.getElementById('spinner').style.display = 'block';
+
+window.onload = function() {
+    const defaultRecipes = [
+        { strMeal: 'Recipe 1', strMealThumb: 'image1.jpg', idMeal: 'id1' },
+        { strMeal: 'Recipe 2', strMealThumb: 'image2.jpg', idMeal: 'id2' },
+        { strMeal: 'Recipe 3', strMealThumb: 'image3.jpg', idMeal: 'id3' },
+    ];
+    displayRecipes(defaultRecipes);
+};
+
+
+document.getElementById('search-button').addEventListener('click', function() {
     const ingredient = document.getElementById('ingredient-input').value;
-    const diets = ['vegan', 'vegetarian']
-        .filter(diet => document.getElementById(`diet-${diet}`).checked)
-        .join(' ');
-    fetch(`https://api.edamam.com/search?q=${ingredient}&app_id=018889a7&app_key=48f4486c930a117358842ced29ea540a -&from=${page*resultsPerPage}&to=${(page+1)*resultsPerPage}&diet=${diets}`)
-        .then(response => response.json())
-        .then(data => {
-            const recipes = data.hits.map(hit => hit.recipe);
-            document.getElementById('recipes').innerHTML = recipes.map((recipe, index) => `
-                <div>
-                    <h2>${recipe.label}</h2>
-                    <img src="${recipe.image}" alt="${recipe.label}">
-                    <p>${recipe.ingredientLines.join(', ')}</p>
-                    <button class="save-btn" data-index="${index}">Save</button>
-                    <button class="nutrition-btn" data-index="${index}">Get Nutrition Info</button>
+    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.meals) {
+            displayRecipes(data.meals);
+        } else {
+            const recipeList = document.getElementById('recipe-list');
+            recipeList.innerHTML = '<div class="col-12">No meals found</div>';
+        }
+    })
+    .catch(error => console.error('There has been a problem with your fetch operation: ', error));
+});
+
+
+function displayRecipes(recipes) {
+    const recipeList = document.getElementById('recipe-list');
+    recipeList.innerHTML = '';
+    recipes.forEach(meal => {
+        const div = document.createElement('div');
+        div.classList.add('col-md-4');
+        div.innerHTML = `
+            <div class="card mb-4">
+                <img src="${meal.strMealThumb}" class="card-img-top" alt="${meal.strMeal}">
+                <div class="card-body">
+                    <h5 class="card-title">${meal.strMeal}</h5>
+                    <button class="btn btn-primary">View Recipe</button>
                 </div>
-            `).join('');
-            document.querySelectorAll('.save-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = this.dataset.index;
-                    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-                    favorites.push(recipes[index]);
-                    localStorage.setItem('favorites', JSON.stringify(favorites));
-                });
-            });
-            document.querySelectorAll('.nutrition-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const index = this.dataset.index;
-                    fetchNutritionInfo(recipes[index].label);
-                });
-            });
-            document.getElementById('spinner').style.display = 'none';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('spinner').style.display = 'none';
+            </div>
+        `;
+        div.querySelector('button').addEventListener('click', function() {
+            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
+            .then(response => response.json())
+            .then(data => {
+                const meal = data.meals[0];
+                return getCountryDetails(meal.strArea)
+                    .then(country => ({meal, country}));
+            })
+            .then(({meal, country}) => {
+                document.getElementById('recipe-image').src = meal.strMealThumb;
+                document.getElementById('recipe-image').alt = meal.strMeal;
+                document.getElementById('recipe-title').textContent = `${meal.strMeal} (${meal.strArea})`;
+                document.getElementById('recipe-instructions').textContent = meal.strInstructions;
+                document.getElementById('recipe-country-details').innerHTML = `
+                    <p>Population: ${country.population}</p>
+                    <p>Region: ${country.region}</p>
+                    <p>Subregion: ${country.subregion}</p>
+                `;
+                document.getElementById('recipe-details').style.display = 'block';
+            })
+            .catch(error => console.error('There has been a problem with your fetch operation: ', error));
         });
+        recipeList.appendChild(div);
+    });
 }
-
-function fetchNutritionInfo(foodName) {
-    fetch(`https://api.nutritionix.com/v1_1/search/${foodName}?results=0:1&fields=item_name,brand_name,nf_calories,nf_total_fat&appId=${appId}&appKey=${appKey}`)
-        .then(response => response.json())
-        .then(data => {
-            const item = data.hits[0].fields;
-            console.log(`Item: ${item.item_name}`);
-            console.log(`Brand: ${item.brand_name}`);
-            console.log(`Calories: ${item.nf_calories}`);
-            console.log(`Total Fat: ${item.nf_total_fat}`);
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-document.getElementById('search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    currentPage = 0;
-    fetchRecipes(currentPage);
-});
-
-document.getElementById('prev-btn').addEventListener('click', function() {
-    if (currentPage > 0) {
-        currentPage--;
-        fetchRecipes(currentPage);
-    }
-});
-
-document.getElementById('next-btn').addEventListener('click', function() {
-    currentPage++;
-    fetchRecipes(currentPage);
-});
-
-window.addEventListener('load', function() {
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    document.getElementById('favorites').innerHTML = favorites.map(recipe => `
-        <div>
-            <h2>${recipe.label}</h2>
-            <img src="${recipe.image}" alt="${recipe.label}">
-            <p>${recipe.ingredientLines.join(', ')}</p>
-        </div>
-    `).join('');
-});
