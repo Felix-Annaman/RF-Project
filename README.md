@@ -10,7 +10,8 @@ Recipe Finder is a web application that allows users to search for recipes based
 * 
 * Default Recipes: When the page loads, the application displays a set of default recipes.
 
-  
+ ![image](https://github.com/Felix-Annaman/RF-Project/assets/150185196/c95a6eaa-add2-4fb9-862b-15cc1d77c839)
+ 
 ## API Used
 * TheMealDB API: Used to fetch the recipes and meal details.
 * REST Countries API: Used to fetch the details about the country of origin for each meal.
