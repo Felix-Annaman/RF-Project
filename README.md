@@ -16,6 +16,12 @@ Recipe Finder is a web application that allows users to search for recipes based
 * TheMealDB API: Used to fetch the recipes and meal details.
 * REST Countries API: Used to fetch the details about the country of origin for each meal.
 
+## User Story
+1. As a user, I want to be able to search for recipes based on ingredients so that I can find meals that I can make with the ingredients I have on hand.
+2. As a user, I want to be able to view more details about a recipe, such as the cooking instructions and country of origin, so that I can decide if I want to make the meal.
+3. As a user, I want to be able to see details about the country of origin for each meal, such as the population and region, so that I can learn more about the culture and cuisine.
+4. As a user, I want to be able to see a set of default recipes when the page loads so that I can get inspiration for meals to make.
+5. As a user, I want the application to fetch data from TheMealDB API and REST Countries API so that I can have access to a wide variety of recipes and country information.
 
 ## Installation
 
